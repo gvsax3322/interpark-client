@@ -17,5 +17,5 @@
 - 프로젝트 생성
 
 ```js
-npm rum start
+npm run start
 ```
