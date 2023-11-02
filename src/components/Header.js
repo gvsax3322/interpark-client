@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/anchor-has-content */
 import "../styles/header.css";
 function Header() {
   // js 코드 자리
@@ -78,7 +80,7 @@ function Header() {
           <ul className="header-today-menu">
             <li>
               <a href="#">
-                <img src="..images/icon_gnb_nol.png" alt="" />
+                <img src="../images/icon_gnb_nol.png" alt="" />
                 항공 즉시할인
               </a>
             </li>
