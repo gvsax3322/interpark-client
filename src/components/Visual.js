@@ -1,8 +1,13 @@
+import { BtSlidePrev, BtSlideNext } from "../components/ui/buttons";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import { useEffect, useRef, useState } from "react";
 import "swiper/css";
 import "../styles/visual.css";
+import { useEffect, useRef, useState } from "react";
+// axios 모듈(js.파일) 가져오기
+import axios from "axios";
+import styled from "@emotion/styled";
+import { InnerArea, SectionTag } from "./layout/layout";
 
 function Visual() {
   // js 코드 자리
@@ -10,73 +15,101 @@ function Visual() {
   // 1. swiper 슬라이드 태그를 참조한다.
   const swiperRef = useRef();
 
-  const fetchGetDate = () => {
-    //외부 데이터 연동(fetch)
-    fetch("visual.json")
-      .then((res) => res.json())
-      .then((res) => {
-        // console.log(res);
-        // 자료를 출력하자.
-        makeVisualSlide(res);
+  // 외부 데이터 연동 (axios 활용)
+  const axiosGetData = function () {
+    axios
+      .get("visual.json")
+      .then(function (res) {
+        // console.log(res.data);
+        makeVisualSlide(res.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(function (error) {
+        console.log(error);
       });
   };
 
+  // 외부 데이터 연동 ( fetch 활용)
+  // const fetchGetData = () => {
+  //   fetch("visual.json")
+  //     .then((res) => res.json())
+  //     .then((result) => {
+  //       // console.log(result);
+  //       // 자료를 출력하자.
+  //       makeVisualSlide(result);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
   // visual 슬라이드 내용 채우는 기능
-  // 컴포넌트에 출력할 JSX 리액트용 변수
-  // 일반변수 말고 리액트용 변수를 state라고 합니다.
+  // 리액트용 변수 : 컴포넌트에 출력할 JSX
+  //       일반변수 말고  리액트용 변수를 state 라고 합니다.
   let [visualHtml, setVisualHtml] = useState([]);
 
-  const makeVisualSlide = (_date) => {
-    const visualRes = _date;
+  const makeVisualSlide = (_data) => {
+    const visualRes = _data;
+    // console.log(visualRes);
+    // for(초기값; 조건식; 증감식) {
+    //   할일
+    // };
     let visualArray = [];
-
     for (let i = 0; i < visualRes.total; i++) {
+      // console.log("visual_" + (i + 1));
       visualArray[i] = visualRes["visual_" + (i + 1)];
     }
-    // console.log(visualArray);
+    //console.log(visualArray);
     setVisualHtml(visualArray);
-    // // 배열 자료(visualArray)를 뜯어서 캄포넌트 담기
+
+    // // 배열 자료(visualArray) 를 뜯어서 컴포넌트 담기
     // let slideArray = [];
     // for (let i = 0; i < visualRes.total; i++) {
-    //   slideArray[i] = <SwiperSlide>
-    //     ....
-    //   </SwiperSlide>;
+    //   slideArray[i] = <SwiperSlide></SwiperSlide>;
     // }
     // console.log(slideArray);
   };
 
-  //컴포넌트가 렌더링 되면
-  // 데이터 호출 및 배치
-  // 주로 하는 작업
-  // 1.네트워크 연동 외부 데이터 불러들임
-  // 2.html 을 제어할 때
-  // 3.윈도우 (window) 를 제어할때
-  // 4.window.addEventLisner 작성할떄
-  // 5.window.removeEventLismer 작성할때
-  // 6.컴포넌트가 삭제 될때
-
+  // 화면이 보이면
+  // 컴포넌트가 보이면
+  // 컴포넌트가 랜더링 되면
+  //     데이터 호출 및 배치
+  //  주로 하는 작업
+  //   1. 네트워크 연동 외부 데이터 불러들임
+  //   2. html 을 제어할 때
+  //   3. 윈도우 (window) 를 제어할때
+  //   4. window.addEventLisener 작성할때
+  //   5. window.removeEventListner 작성할떄
+  //   6. 컴포넌트가 삭제 될때
   useEffect(() => {
     // 랜더링 될때
-    // viual.json 데이터 불러들이기 기능실행
-    fetchGetDate();
-
+    //  visual.json 데이터 불러들이기 기능실행
+    axiosGetData();
+    // fetchGetData();
     return () => {
-      // 삭제 될때 (clean Up 함수)
+      // 삭제될때 (Clean Up 함수)
     };
   }, []);
 
+  const SlideItem = styled.div`
+    position: relative;
+    width: 628px;
+  `;
+  const SlideLink = styled.a`
+    position: relative;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    border-radius: 13px;
+  `;
+
   return (
-    <section className="visual">
-      <div className="visual-inner">
+    <SectionTag pt={30} pb={80}>
+      <InnerArea style={{ height: 345 }}>
         <Swiper
           slidesPerView={2}
           spaceBetween={24}
           autoplay={{
-            delay: 1000, // 대기시간
-            disableOnInteraction: false, //사용자 터치후 자동실행 다시
+            delay: 1000,
+            disableOnInteraction: false,
           }}
           modules={[Autoplay]}
           loop
@@ -88,33 +121,32 @@ function Visual() {
           {visualHtml.map((item, index) => {
             return (
               <SwiperSlide key={index}>
-                <div className="visual-slide-item">
-                  <a href={item.url}>
+                <SlideItem>
+                  <SlideLink href={item.url}>
                     <img
                       src={process.env.PUBLIC_URL + item.file}
-                      alt={item.rul}
+                      alt={item.file}
                     />
-                  </a>
-                </div>
+                  </SlideLink>
+                </SlideItem>
               </SwiperSlide>
             );
           })}
         </Swiper>
-        <button
-          className="visual-slide-prev"
+
+        <BtSlidePrev
           onClick={() => {
             swiperRef.current.slidePrev();
           }}
-        ></button>
-        <button
-          className="visual-slide-next"
+        ></BtSlidePrev>
+
+        <BtSlideNext
           onClick={() => {
             swiperRef.current.slideNext();
           }}
-        ></button>
-      </div>
-    </section>
+        ></BtSlideNext>
+      </InnerArea>
+    </SectionTag>
   );
 }
-
 export default Visual;

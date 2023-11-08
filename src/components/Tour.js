@@ -2,10 +2,44 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "../styles/tour.css";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 function Tour() {
   const swiperRef = useRef();
+
+  const [htmlTag, sethtmlTag] = useState([]);
+
+  //외부 데이터 연동 (fetch)
+  const axiosJonsData = () => {
+    axios
+      .get("tour.json")
+      .then((res) => {
+        let arr = [];
+        for (let i = 0; i < res.data.total; i++) {
+          const obj = res.data["good_" + (i + 1)];
+          arr[i] = obj;
+        }
+        sethtmlTag(arr);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  // html 이 준비가 되면, json을 불러들인다.
+  // 1.외부데이터 부르기
+  // 2윈도우 (window) 를 제어할때
+  // 3.window.addEventLisner 작성할떄
+  // 4.html 태그 참조 (useRef)
+  // 5.컴퍼넌트 삭제 할때
+  // 6, 타이머 만들고 , 제거할때
+  // 컴포넌트 화면에 보여질 때 실행할 내용 기재 장소
+  // use 는 hook 이라고 한다. 원하는 시점을 감시하고 실핼할 함수
+  useEffect(() => {
+    // 외부 데이터 불러들이기
+    //getJsonData();
+    axiosJonsData();
+  }, []);
   return (
     <section className="tour">
       <div className="tour-inner">
@@ -47,222 +81,32 @@ function Tour() {
               }}
               className="tour-slide"
             >
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
+              {htmlTag.map((item, index) => {
+                function add(name) {
+                  return name
+                    ?.toString()
+                    ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                return (
+                  <SwiperSlide key={index}>
+                    <div className="tour-slide-item">
+                      <a href={item.url} className="tour-link">
+                        <div className="tour-link-img">
+                          <img src={item.image} alt={item.desc} />
+                        </div>
+                        <div className="tour-link-info">
+                          <div className="tour-link-info-1">{item.title}</div>
+                          <div className="tour-link-info-2">{item.desc}</div>
+                          <div className="tour-link-info-3">{item.pkg}</div>
+                          <div className="tour-link-info-4">
+                            <em>{add(item.price)}</em>원~
+                          </div>
+                        </div>
+                      </a>
                     </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="tour-slide-item">
-                  <a href="a.html" className="tour-link">
-                    <div className="tour-link-img">
-                      <img
-                        src="images/tourimg/t1.jpg"
-                        alt="공항 10분 거리, 오션뷰 인피니티 풀"
-                      />
-                    </div>
-                    <div className="tour-link-info">
-                      <div className="tour-link-info-1">괌</div>
-                      <div className="tour-link-info-2">
-                        공항 10분 거리, 오션뷰 인피니티 풀
-                      </div>
-                      <div className="tour-link-info-3">
-                        괌 리프 호텔 (구.괌 리프 앤 올리브 스파 리조트)
-                      </div>
-                      <div className="tour-link-info-4">
-                        <em>219,120</em>원~
-                      </div>
-                    </div>
-                  </a>
-                </div>
-              </SwiperSlide>
+                  </SwiperSlide>
+                );
+              })}
             </Swiper>
 
             <button className="slide-prev-bt">
